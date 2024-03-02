@@ -3,6 +3,8 @@ package com.nailshop.nailborhood.controller.member;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.member.response.MemberListResponseDto;
+import com.nailshop.nailborhood.dto.shop.response.ShopListResponseDto;
+import com.nailshop.nailborhood.service.member.admin.AppliedShopInquiryService;
 import com.nailshop.nailborhood.service.member.admin.ChangeRoleService;
 import com.nailshop.nailborhood.service.member.admin.MemberInquiryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,6 +23,7 @@ public class AdminController {
 
     private final ChangeRoleService changeRoleService;
     private final MemberInquiryService memberInquiryService;
+    private final AppliedShopInquiryService appliedShopInquiryService;
 
 
     @Tag(name = "admin", description = "admin API")
@@ -46,5 +49,19 @@ public class AdminController {
         resultDto.setData((MemberListResponseDto) inquiryAllMember.getData());
 
         return ResponseEntity.status(inquiryAllMember.getHttpStatus()).body(resultDto);
+    }
+
+    @Tag(name = "admin", description = "admin API")
+    @Operation(summary = "매장등록신청 전체 조회", description = "admin API")
+    @GetMapping("/admin/shop/inquiry")
+    public ResponseEntity<ResultDto<ShopListResponseDto>> inquiryAllAppliedShop(@RequestHeader(AUTH) String accessToken,
+                                                                                @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                                                                @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+                                                                                @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy) {
+        CommonResponseDto<Object> inquiryAllAppliedShop = appliedShopInquiryService.inquiryAllAppliedShop(accessToken, page, size, sortBy);
+        ResultDto<ShopListResponseDto> resultDto = ResultDto.in(inquiryAllAppliedShop.getStatus(), inquiryAllAppliedShop.getMessage());
+        resultDto.setData((ShopListResponseDto) inquiryAllAppliedShop.getData());
+
+        return ResponseEntity.status(inquiryAllAppliedShop.getHttpStatus()).body(resultDto);
     }
 }

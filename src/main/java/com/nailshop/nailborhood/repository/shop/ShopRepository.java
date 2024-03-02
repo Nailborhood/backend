@@ -72,4 +72,7 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
             "FROM Shop s " +
             "WHERE s.name Like %:keyword%  AND s.isDeleted = false " )
     Page<Shop> findShopListByKeyword(@Param("keyword") String keyword, PageRequest pageable);
+
+    // 신청 매장 전체 조회
+    Page<Shop> findByIsDeletedFalseAndStatus(ShopStatus status, Pageable pageable);
 }
