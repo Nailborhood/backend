@@ -24,5 +24,9 @@ public class Owner {
     @JoinColumn(name = "shop_id")
     private Shop shop;
 
-
+    @Builder
+    public Owner(Member member, Shop shop) {
+        this.member = member;
+        this.shop = shop;
+    }
 }
