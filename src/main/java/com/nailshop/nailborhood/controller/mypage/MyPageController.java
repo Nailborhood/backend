@@ -117,7 +117,8 @@ public class MyPageController {
                                                         @RequestPart(value = "file") List<MultipartFile> multipartFileList,
                                                         @RequestPart(value = "certificateFile") List<MultipartFile> fileList,
                                                         @RequestPart(value = "data") ShopRegistrationRequestDto shopRegistrationRequestDto) {
-        CommonResponseDto<Object> commonResponseDto = shopRegistrationService.registerShop(multipartFileList,fileList,shopRegistrationRequestDto,accessToken);
+
+        CommonResponseDto<Object> commonResponseDto = shopRegistrationService.registerShop(multipartFileList, fileList, shopRegistrationRequestDto, accessToken);
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus())
