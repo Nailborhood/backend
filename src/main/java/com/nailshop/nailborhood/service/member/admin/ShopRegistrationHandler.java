@@ -27,8 +27,8 @@ public class ShopRegistrationHandler {
     private final CommonService commonService;
     private final TokenProvider tokenProvider;
     private final MemberRepository memberRepository;
-    private final OwnerRepository ownerRepository;
     private final ShopRepository shopRepository;
+    private final OwnerRepository ownerRepository;
 
     @Transactional
     public CommonResponseDto<Object> shopApprove(String accessToken, Long shopId) {
@@ -42,18 +42,12 @@ public class ShopRegistrationHandler {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
 
-        Member member = shop.getOwner().getMember();
+        Owner owner = shop.getOwner();
+        Member member = owner.getMember();
 
-
-        // member role 변경 및 owner 생성
+        // member role 및 isApproved 변경
         member.changeRole(Role.OWNER);
-
-        Owner owner = Owner.builder()
-                .shop(shop)
-                .member(member)
-                .build();
-
-        ownerRepository.save(owner);
+        owner.changeIsApproved(true);
 
         // shop status 변경
         shop.changeStatus(ShopStatus.OPEN);
@@ -69,9 +63,14 @@ public class ShopRegistrationHandler {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
         if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
-        // shop 정보 get
+        // shop, owner 정보 get
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
+
+        Owner owner = shop.getOwner();
+
+        // owner 삭제
+        ownerRepository.deleteById(owner.getOwnerId());
 
         // shop 삭제
         shopRepository.deleteById(shopId);

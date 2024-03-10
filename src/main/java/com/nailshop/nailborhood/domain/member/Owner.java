@@ -16,6 +16,8 @@ public class Owner {
     @Column(name = "owner_id")
     private Long ownerId;
 
+    private boolean isApproved;
+
     @OneToOne
     @JoinColumn(name = "member_id")
     private Member member;
@@ -25,8 +27,13 @@ public class Owner {
     private Shop shop;
 
     @Builder
-    public Owner(Member member, Shop shop) {
+    public Owner(boolean isApproved, Member member, Shop shop) {
+        this.isApproved = isApproved;
         this.member = member;
         this.shop = shop;
+    }
+
+    public void changeIsApproved(boolean isApproved){
+        this.isApproved = isApproved;
     }
 }
