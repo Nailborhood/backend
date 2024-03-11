@@ -3,8 +3,6 @@ package com.nailshop.nailborhood.controller.shop.admin;
 import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.common.ResultDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopModifiactionRequestDto;
-import com.nailshop.nailborhood.dto.shop.response.admin.AllShopsListResponseDto;
-import com.nailshop.nailborhood.service.shop.admin.AllShopsLookupAdminService;
 import com.nailshop.nailborhood.service.shop.admin.ShopDeleteService;
 import com.nailshop.nailborhood.service.shop.admin.ShopStatusChangeService;
 import com.nailshop.nailborhood.service.shop.owner.ShopModificationService;
@@ -25,7 +23,6 @@ import static com.nailshop.nailborhood.security.service.jwt.TokenProvider.AUTH;
 public class AdminShopController {
 
     private final ShopModificationService shopModificationService;
-    private final AllShopsLookupAdminService allShopsLookupAdminService;
     private final ShopDeleteService shopDeleteService;
     private final ShopStatusChangeService shopStatusChangeService;
 
@@ -45,22 +42,6 @@ public class AdminShopController {
                              .body(resultDto);
     }
 
-    @Tag(name = "admin", description = "admin API")
-    @Operation(summary = "매장 전체 조회", description = "admin API")
-    // 전체 매장 조회
-    @GetMapping(value = "/admin/shopList")
-    public ResponseEntity<ResultDto<AllShopsListResponseDto>> getAllShops(@RequestHeader(AUTH) String accessToken,
-                                                                          @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                                          @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-                                                                          @RequestParam(value = "orderby", defaultValue = "createdAt", required = false) String criteria,
-                                                                          @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort) {
-        CommonResponseDto<Object> allShopsList = allShopsLookupAdminService.getAllShops(accessToken,page, size, criteria, sort);
-        ResultDto<AllShopsListResponseDto> resultDto = ResultDto.in(allShopsList.getStatus(), allShopsList.getMessage());
-        resultDto.setData((AllShopsListResponseDto) allShopsList.getData());
-
-        return ResponseEntity.status(allShopsList.getHttpStatus())
-                             .body(resultDto);
-    }
 
     @Tag(name = "admin", description = "admin API")
     @Operation(summary = "매장 삭제", description = "admin API")

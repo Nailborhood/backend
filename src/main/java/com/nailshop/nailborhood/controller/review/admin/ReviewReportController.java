@@ -26,13 +26,13 @@ public class ReviewReportController {
 
     @Tag(name = "admin", description = "admin API")
     @Operation(summary = "리뷰 신고 전체 조회", description = "admin API")
-    // 리뷰 신고 전체 조회
+    // 리뷰 신고 전체 조회 (검색)
     @GetMapping(value = "/admin/reviewReport")
-    public ResponseEntity<ResultDto<ReviewReportListLookupDto>> getAllShops(@RequestHeader(AUTH) String accessToken,
+    public ResponseEntity<ResultDto<ReviewReportListLookupDto>> getAllShops(@RequestParam(value = "keyword",required = false) String keyword,
                                                                             @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                                                             @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                                                             @RequestParam(value = "sort", defaultValue = "DESC", required = false) String sort) {
-        CommonResponseDto<Object> reviewReports = reviewReportStatusAdminService.getReviewReports(accessToken,page, size, sort);
+        CommonResponseDto<Object> reviewReports = reviewReportStatusAdminService.getReviewReports(keyword,page, size, sort);
         ResultDto<ReviewReportListLookupDto> resultDto = ResultDto.in(reviewReports.getStatus(), reviewReports.getMessage());
         resultDto.setData((ReviewReportListLookupDto) reviewReports.getData());
 

@@ -25,12 +25,12 @@ public class AdminSearchController {
     @Tag(name = "search", description = "admin API")
     @Operation(summary = "유저 검색(탈퇴 회원 포함)", description = "admin API")
     @GetMapping("/admin/search/member")
-    public ResponseEntity<ResultDto<MemberListResponseDto>> inquiryAllMember(@RequestHeader(AUTH) String accessToken,
-                                                                             @RequestParam(value = "keyword") String keyword,
+    public ResponseEntity<ResultDto<MemberListResponseDto>> inquiryAllMember(
+                                                                             @RequestParam(value = "keyword", required = false) String keyword,
                                                                              @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                                                              @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                                                              @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy){
-        CommonResponseDto<Object> inquiryAllMember = adminSearchService.searchMemberInquiry(accessToken,keyword, page, size, sortBy);
+        CommonResponseDto<Object> inquiryAllMember = adminSearchService.searchMemberInquiry(keyword, page, size, sortBy);
         ResultDto<MemberListResponseDto> resultDto = ResultDto.in(inquiryAllMember.getStatus(), inquiryAllMember.getMessage());
         resultDto.setData((MemberListResponseDto) inquiryAllMember.getData());
 
@@ -41,12 +41,12 @@ public class AdminSearchController {
     @Tag(name = "search", description = "search API")
     @Operation(summary = "리뷰 검색", description = "search API")
     @GetMapping("/admin/search/review")
-    public ResponseEntity<ResultDto<ReviewListResponseDto>> searchReviewInquiry(@RequestHeader(AUTH) String accessToken,
-                                                                                @RequestParam(value = "keyword") String keyword,
+    public ResponseEntity<ResultDto<ReviewListResponseDto>> searchReviewInquiry(
+                                                                                @RequestParam(value = "keyword",required = false) String keyword,
                                                                                 @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                                                                 @RequestParam(value = "size", defaultValue = "20", required = false) int size,
                                                                                 @RequestParam(value = "sortBy", defaultValue = "updatedAt", required = false) String sortBy){
-        CommonResponseDto<Object> commonResponseDto = adminSearchService.searchReviewInquiry(accessToken,keyword, page, size, sortBy);
+        CommonResponseDto<Object> commonResponseDto = adminSearchService.searchReviewInquiry(keyword, page, size, sortBy);
         ResultDto<ReviewListResponseDto> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
         resultDto.setData((ReviewListResponseDto) commonResponseDto.getData());
 

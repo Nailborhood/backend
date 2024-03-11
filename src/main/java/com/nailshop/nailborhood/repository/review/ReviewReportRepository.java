@@ -43,4 +43,12 @@ public interface ReviewReportRepository extends JpaRepository<ReviewReport, Long
     ReviewReport findReviewReportByReviewId(@Param("reviewId") Long reviewId);
 
 
+    // 관리자 리뷰신고 검색 ( 신고자 , 리뷰 작성자 , 매장이름 )
+    @Query("SELECT rr " +
+            "FROM ReviewReport rr " +
+            "LEFT JOIN rr.review r " +
+            "LEFT JOIN r.shop s " +
+            "WHERE (rr.member.nickname Like %:keyword% OR r.customer.member.nickname like %:keyword% OR s.name Like %:keyword% ) " )
+    Page<ReviewReport> findAllReviewReportListBySearch(@Param("keyword")String keyword, Pageable pageable);
+
 }

@@ -9,6 +9,7 @@ import com.nailshop.nailborhood.dto.review.response.ReviewReportLookupDto;
 import com.nailshop.nailborhood.exception.BadRequestException;
 import com.nailshop.nailborhood.exception.NotFoundException;
 import com.nailshop.nailborhood.repository.member.MemberRepository;
+import com.nailshop.nailborhood.repository.review.ReviewImgRepository;
 import com.nailshop.nailborhood.repository.review.ReviewReportRepository;
 import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
@@ -34,37 +35,49 @@ public class ReviewReportStatusAdminService {
     private final CommonService commonService;
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
+    private final ReviewImgRepository reviewImgRepository;
+
 
 
     // 리뷰 신고 조회
-    public CommonResponseDto<Object> getReviewReports(String accessToken, int page, int size, String sort) {
+    public CommonResponseDto<Object> getReviewReports(String keyword,int page, int size, String sort) {
 
         // 관리자 확인
-        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
-                                       .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
+//        Member admin = memberRepository.findByMemberIdAndIsDeleted(tokenProvider.getUserId(accessToken))
+//                                       .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+//        if (!admin.getRole().equals(Role.ADMIN)) throw new BadRequestException(ErrorCode.UNAUTHORIZED_ACCESS);
 
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sort)
                                                                .descending());
-        Page<ReviewReport> reviewReports = reviewReportRepository.findAllNotDeleted(pageable);
+        Page<ReviewReport> reviewReportPage;
 
-        if (reviewReports.isEmpty()) {
+        if(keyword == null || keyword.trim().isEmpty()) {
+            reviewReportPage = reviewReportRepository.findAllNotDeleted(pageable);
+        }else {
+            reviewReportPage = reviewReportRepository.findAllReviewReportListBySearch(keyword,pageable);
+        }
+
+        if (reviewReportPage.isEmpty()) {
             throw new NotFoundException(ErrorCode.REVIEW_REPORT_NOT_FOUND);
         }
 
         // ReviewReport entity -> dto 변환
-        Page<ReviewReportLookupDto> data = reviewReports.map(reviewReport -> {
+        Page<ReviewReportLookupDto> data = reviewReportPage.map(reviewReport -> {
 
+            String mainImgPath = reviewImgRepository.findByReviewImgListReviewId(reviewReport.getReportId()).getFirst().getImgPath();
             ReviewReportLookupDto dto = new ReviewReportLookupDto(
                     reviewReport.getReportId(),
+                    mainImgPath,
                     reviewReport.getContents(),
                     reviewReport.getDate(),
                     reviewReport.getStatus(),
                     reviewReport.getReview()
                                 .getReviewId(),
+                    reviewReport.getReview().getCustomer().getMember().getNickname(),
                     reviewReport.getReview()
                                 .getContents(),
-                    reviewReport.getMember().getNickname()
+                    reviewReport.getMember().getNickname(),
+                    reviewReport.getReview().getShop().getName()
 
             );
             return dto;

@@ -9,6 +9,7 @@ import com.nailshop.nailborhood.dto.common.CommonResponseDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopMenuDto;
 import com.nailshop.nailborhood.dto.shop.request.ShopRegistrationRequestDto;
 import com.nailshop.nailborhood.repository.shop.*;
+import com.nailshop.nailborhood.security.service.jwt.TokenProvider;
 import com.nailshop.nailborhood.service.common.CommonService;
 import com.nailshop.nailborhood.service.s3upload.S3UploadService;
 import com.nailshop.nailborhood.type.ErrorCode;
@@ -34,10 +35,12 @@ public class ShopRegistrationService {
     private final MenuRepository menuRepository;
     private final ShopImgRepository shopImgRepository;
     private final CertificateImgRepository certificateImgRepository;
+    private final TokenProvider tokenProvider;
 
     // 매장 등록
     public CommonResponseDto<Object> registerShop(List<MultipartFile> multipartFileList,List<MultipartFile> fileList, ShopRegistrationRequestDto shopRegistrationRequestDto, String accessToken) {
 
+//        Long memberId = tokenProvider.getUserId(accessToken);
         // 동 엔티티 설정
         String dongName = shopRegistrationRequestDto.getStoreAddressSeparation()
                                                     .getDongName();
