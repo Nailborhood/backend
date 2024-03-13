@@ -45,10 +45,10 @@ public class ReviewReportController {
     @Operation(summary = "리뷰 신고 처리 변경 ", description = "admin API")
     // 리뷰 신고 처리 변경
     @PutMapping("/admin/reviewReport/{reportId}")
-    public ResponseEntity<ResultDto<Void>> changeReviewReportStatus(@RequestHeader(AUTH) String accessToken,
+    public ResponseEntity<ResultDto<Void>> changeReviewReportStatus(
                                                                     @PathVariable Long reportId,
                                                                     @RequestParam(value = "status") String status) {
-        CommonResponseDto<Object> commonResponseDto = reviewReportStatusAdminService.changeReviewStatus(accessToken,reportId, status);
+        CommonResponseDto<Object> commonResponseDto = reviewReportStatusAdminService.changeReviewStatus(reportId, status);
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus())

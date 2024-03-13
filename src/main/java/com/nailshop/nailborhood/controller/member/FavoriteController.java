@@ -21,9 +21,9 @@ public class FavoriteController {
 
     @Tag(name = "favorite", description = "favorite API")
     @Operation(summary = "매장 찜 ", description = "favorite API")
-    // 매장 상세 조회
-    @GetMapping("/favorite/{shopId}")
-    public ResponseEntity<ResultDto<FavoriteResponseDto>> getShopDetail(@RequestHeader(AUTH) String accessToken,
+    // 메장 찜
+    @PostMapping("/favorite/{shopId}")
+    public ResponseEntity<ResultDto<FavoriteResponseDto>> shopFavorite(@RequestHeader(AUTH) String accessToken,
                                                                         @PathVariable Long shopId){
         CommonResponseDto<Object> favoriteShop = favoriteShopService.favoriteShop(shopId,accessToken);
         ResultDto<FavoriteResponseDto> resultDto = ResultDto.in(favoriteShop.getStatus(), favoriteShop.getMessage());
