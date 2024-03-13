@@ -37,11 +37,11 @@ public class AdminController {
     @Tag(name = "admin", description = "admin API")
     @Operation(summary = "유저 전체 조회(탈퇴 회원 포함)", description = "admin API")
     @GetMapping("/admin/member/inquiry")
-    public ResponseEntity<ResultDto<MemberListResponseDto>> inquiryAllMember(@RequestHeader(AUTH) String accessToken,
+    public ResponseEntity<ResultDto<MemberListResponseDto>> inquiryAllMember(@RequestParam(value = "keyword",required = false) String keyword,
                                                                              @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                                                              @RequestParam(value = "size", defaultValue = "10", required = false) int size,
                                                                              @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy){
-        CommonResponseDto<Object> inquiryAllMember = memberInquiryService.inquiryAllMember(accessToken, page, size, sortBy);
+        CommonResponseDto<Object> inquiryAllMember = memberInquiryService.inquiryAllMember(keyword, page, size, sortBy);
         ResultDto<MemberListResponseDto> resultDto = ResultDto.in(inquiryAllMember.getStatus(), inquiryAllMember.getMessage());
         resultDto.setData((MemberListResponseDto) inquiryAllMember.getData());
 

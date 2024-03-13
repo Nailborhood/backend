@@ -200,7 +200,7 @@ public class AdminSearchService {
         Page<Shop> shopSearchPage;
         if (keyword == null || keyword.trim()
                                       .isEmpty()) {
-            shopSearchPage = shopRepository.findAllNotDeleted(pageable);
+            shopSearchPage = shopRepository.findAll(pageable);
         } else {
             shopSearchPage = shopRepository.findALlShopListByKeyword(keyword, pageable);
         }
